@@ -5,6 +5,11 @@ VisualStudioVersion = 15.0.28307.539
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{53AE98D3-D6BC-41B5-8596-D6D6247477E6}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Thirdparty", "Thirdparty", "{852A8239-5628-4E81-B675-7A5F649B6DFC}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\Configs\WG.ruleset = ..\..\Configs\WG.ruleset
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

@@ -17,5 +17,28 @@ namespace ConsoleApp1
             Name = name;
             Price = price;
         }
+
+        public static List<Product> GetSampleProducts()
+        {
+            return new List<Product>
+            {
+               new Product(name:"wj",price:99m),
+               new Product(name:"wc",price:59m),
+               new Product(name:"wy",price:39m)
+            };
+        }
+
+        public override string ToString()
+        {
+            return string.Format("{0}:{1}", Name, Price);
+        }
+    }
+
+    public class ProductNameComparer :IComparer<Product>
+    {
+        public int Compare(Product x , Product y)
+        {
+            return x.Name.CompareTo(y.Name);
+        }
     }
 }
