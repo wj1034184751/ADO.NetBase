@@ -128,6 +128,7 @@ namespace ConsoleApp1
         public static EventBus<MyString> ev = EventBus<MyString>.CreateInstance();
         static InitEvent()
         {
+
             ev.AddEvent("valueChange", (o, e) =>
              {
                  Console.WriteLine(1111111);
