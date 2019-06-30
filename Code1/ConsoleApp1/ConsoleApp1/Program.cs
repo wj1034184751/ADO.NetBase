@@ -91,7 +91,14 @@ namespace ConsoleApp1
 
             //ThreadRun.ThreadT6();
 
-            ClassSize.Print();
+            //ClassSize.Print();
+
+            //DelegateSample.Print();
+            //LambdaTest.Print();
+
+            //ExpressionTest.Print2();
+
+            DeleteClass.Print();
         }
     }
 }

@@ -139,4 +139,109 @@ namespace ConsoleApp1
              });
         }
     }
+
+    public class DeleteClass
+    {
+        public class TemperatureArgs : System.EventArgs
+        {
+            public float NewTemperature { get; set; }
+            public TemperatureArgs(float newTemperature)
+            {
+                NewTemperature = newTemperature;
+            }
+        }
+
+        public event EventHandler<TemperatureArgs> OnTemperatureChange = delegate { };
+
+        public Action<int> StartTemp { get; set; }
+
+        private int currentTeamp { get; set; }
+
+        public int CurrentTeamp
+        {
+            get
+            {
+                return currentTeamp;
+            }
+
+            set
+            {
+                if (CurrentTeamp != value)
+                {
+                    currentTeamp = value;
+                    Action<int> onTemperatureChange = StartTemp;
+                    if (onTemperatureChange != null)
+                    {
+                        List<Exception> exceptionCollection = new List<Exception>();
+                        foreach (Action<int> handler in onTemperatureChange.GetInvocationList())
+                        {
+                            try
+                            {
+                                handler(value);
+                            }
+                            catch (Exception exception)
+                            {
+                                exceptionCollection.Add(exception);
+                            }
+                        }
+
+                        if (exceptionCollection.Count > 0)
+                        {
+                            throw new AggregateException("There were exceptions thrown by OntemperatureChange Event shubscripts", exceptionCollection);
+                        }
+                    }
+                }
+            }
+        }
+
+        public static void Print()
+        {
+            Heater t = new Heater(10);
+            Cooler c = new Cooler(11);
+            DeleteClass dc = new DeleteClass();
+            dc.StartTemp += t.OnTeampeature;
+            dc.StartTemp += (d) =>
+              {
+                  throw new InvalidOperationException();
+              };
+            dc.StartTemp += c.OnTeampeature;
+            dc.CurrentTeamp = 12;
+        }
+    }
+
+    public class Heater
+    {
+        private int Temperature { get; set; }
+
+        public Heater(int Temperature)
+        {
+            this.Temperature = Temperature;
+        }
+
+        public void OnTeampeature(int newTemperature)
+        {
+            if (newTemperature > Temperature)
+                Console.WriteLine($"Heater:温度太高了{newTemperature}");
+            else
+                Console.WriteLine($"Heater:Off");
+        }
+    }
+
+    public class Cooler
+    {
+        private int Temperature { get; set; }
+
+        public Cooler(int Temperature)
+        {
+            this.Temperature = Temperature;
+        }
+
+        public void OnTeampeature(int newTemperature)
+        {
+            if (newTemperature > Temperature)
+                Console.WriteLine($":Cooler温度太高了{newTemperature}");
+            else
+                Console.WriteLine($"Cooler:Off");
+        }
+    }
 }
