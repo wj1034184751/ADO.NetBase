@@ -52,6 +52,7 @@
     <Compile Include="ExpressionTest.cs" />
     <Compile Include="HashTable.cs" />
     <Compile Include="LambdaTest.cs" />
+    <Compile Include="LinqTest.cs" />
     <Compile Include="Product.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

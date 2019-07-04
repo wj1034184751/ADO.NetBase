@@ -98,7 +98,9 @@ namespace ConsoleApp1
 
             //ExpressionTest.Print2();
 
-            DeleteClass.Print();
+            //DeleteClass.Print();
+
+            LinqTest.Print();
         }
     }
 }
