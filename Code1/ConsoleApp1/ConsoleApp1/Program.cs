@@ -100,7 +100,17 @@ namespace ConsoleApp1
 
             //DeleteClass.Print();
 
-            LinqTest.Print();
+            //LinqTest.Print();
+
+            //ThreadTestTwo.Print();
+
+            //ThreadLock.Print();
+
+            //ThradThrow.Print();
+
+            //ThreadHybrid.Print();
+
+            ThreadSemaphoreSlim.Print();
         }
     }
 }

@@ -265,4 +265,280 @@ namespace ConsoleApp1
             Console.WriteLine();
         }
     }
+
+    public class ThreadTestTwo
+    {
+        public static void Print()
+        {
+            //Thread t = new Thread(PrintNumberWithDelay);
+            //t.Start();
+            //t.Join();
+            //PrintNumber();
+            Console.WriteLine("Starting program...");
+            Thread t = new Thread(PrintNumberWithDelay);
+            t.Start();
+            t.Abort();
+            Console.WriteLine("A thread has been abortd");
+            Thread t2 = new Thread(PrintNumber);
+            t2.Start();
+            PrintNumber();
+        }
+
+        static void PrintNumber()
+        {
+            Console.WriteLine("Starting...");
+            for (int i = 1; i < 10; i++)
+            {
+                Console.WriteLine(i);
+            }
+        }
+
+        static void PrintNumberWithDelay()
+        {
+            Console.WriteLine("Starting....");
+            for (int i = 1; i < 10; i++)
+            {
+                Console.WriteLine(i);
+            }
+        }
+    }
+
+    public class ThreadLock
+    {
+        public static void Print()
+        {
+            object lcok1 = new object();
+            object lock2 = new object();
+            new Thread(() => LockTooMuch(lcok1, lock2)).Start();
+            lock (lock2)
+            {
+                Thread.Sleep(1000);
+                Console.WriteLine("Moniotr.tlyrneter");
+                if (Monitor.TryEnter(lcok1, TimeSpan.FromDays(5)))
+                {
+                    Console.WriteLine("Acqu a reqsourece");
+                }
+                else
+                {
+                    Console.WriteLine("TimeOut");
+                }
+            }
+
+            Console.WriteLine(">>>>>>>>>>>>>>>>>>>>>>>");
+
+            lock (lock2)
+            {
+                Console.WriteLine("This will be a deadlock!");
+                Thread.Sleep(1000);
+                lock(lcok1)
+                {
+                    Console.WriteLine("thdsf");
+                }
+            }
+        }
+
+        public static  void LockTooMuch(object lock1,object lock2)
+        {
+            lock(lock1)
+            {
+                Thread.Sleep(1000);
+                lock (lock2) ;
+            }
+        }
+    }
+
+    public class ThradThrow
+    {
+        public static void Print()
+        {
+            var t = new Thread(FaultyThread);
+            t.Start();
+            t.Join();
+            try
+            {
+                t = new Thread(BadFaultyThread);
+                t.Start();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("We wont get here!");
+            }
+        }
+        static void BadFaultyThread()
+        {
+            Console.WriteLine("Starting a faulty thread...");
+            Thread.Sleep(TimeSpan.FromSeconds(2));
+            throw new Exception("Boom!");
+        }
+
+        static void FaultyThread()
+        {
+            try
+            {
+                Console.WriteLine("Start a faulty thread...");
+                Thread.Sleep(TimeSpan.FromSeconds(1));
+                throw new Exception("Boom!");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Exception handled:{0}", ex.Message);
+            }
+        }
+    }
+
+    public class ThreadHybrid
+    {
+        public static void Print()
+        {
+            var c = new Counter();
+            var t1 = new Thread(() => TestCounter(c));
+            var t2 = new Thread(() =>
+            {
+                Console.WriteLine("tt");
+                TestCounter(c);
+            });
+            var t3 = new Thread(() => {
+                Console.WriteLine("tttt");
+                TestCounter(c);
+            });
+
+            t1.Start();
+            t2.Start();
+            t3.Start();
+            t1.Join();
+            t2.Join();
+            t3.Join();
+
+            Console.WriteLine($"Total count:{c.Count}");
+
+            var c1 = new CounterMutex();
+            t1 = new Thread(() => TestCounter(c1));
+            t2 = new Thread(() =>
+            {
+                Console.WriteLine("tt");
+                TestCounter(c1);
+            });
+            t3 = new Thread(() => TestCounter(c1));
+
+            t1.Start();
+            t2.Start();
+            t3.Start();
+            t1.Join();
+            t2.Join();
+            t3.Join();
+
+            Console.WriteLine($"Total count:{c1.Count}");
+        }
+
+        static void TestCounter(CounterBase c)
+        {
+            for (int i = 0; i < 10000000000; i++)
+            {
+                c.Increment();
+                c.Decrement();
+            }
+        }
+    }
+
+    public abstract class CounterBase
+    {
+        public abstract void Increment();
+        public abstract void Decrement();
+    }
+
+    public class Counter : CounterBase
+    {
+        private int _count;
+
+        public int Count { get { return _count; } }
+
+        public override void Increment()
+        {
+            _count++;
+        }
+
+        public override void Decrement()
+        {
+            _count--;
+        }
+    }
+
+    public class CounterNoLock : CounterBase
+    {
+        private int _count;
+
+        public int Count { get { return _count; } }
+
+        public override void Increment()
+        {
+            Interlocked.Increment(ref _count);
+        }
+
+        public override void Decrement()
+        {
+            Interlocked.Decrement(ref _count);
+        }
+    }
+
+    public class CounterMutex : CounterBase
+    {
+        const string MutexName = "TreadMutex";
+        private int _count;
+
+        public int Count { get { return _count; } }
+
+        public override void Increment()
+        {
+            using (var m = new Mutex(false, MutexName))
+            {
+                if (!m.WaitOne())
+                {
+                    _count++;
+                    m.ReleaseMutex();
+                }
+                else
+                    m.ReleaseMutex();
+            }
+        }
+
+        public override void Decrement()
+        {
+            using (var m = new Mutex(false, MutexName))
+            {
+                if (!m.WaitOne())
+                {
+                    _count--;
+                    m.ReleaseMutex();
+                }
+                else
+                    m.ReleaseMutex();
+            }
+        }
+    }
+
+    public class ThreadSemaphoreSlim
+    {
+        public static void Print()
+        {
+            for (int i = 1; i <= 9; i++)
+            {
+                string threadName = "Thread" + i;
+                int secondToWait = 2 + 2 * i;
+                var t = new Thread(() => AccessDatabase(threadName, secondToWait));
+                t.Start();
+            }
+        }
+
+        static SemaphoreSlim _semaphore = new SemaphoreSlim(4);
+
+        static void AccessDatabase(string name,int seconds)
+        {
+            Console.WriteLine("{0} waite to access a database", name);
+            _semaphore.Wait();
+            Console.WriteLine("{0} was granted an access to a database", name);
+            Thread.Sleep(TimeSpan.FromSeconds(seconds));
+            Console.WriteLine("{0} is completed", name);
+            _semaphore.Release();
+        }
+    }
 }

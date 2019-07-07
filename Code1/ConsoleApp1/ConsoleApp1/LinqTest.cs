@@ -12,10 +12,14 @@ namespace ConsoleApp1
         public static void Print()
         {
             IEnumerable<Patent> patents = PatentData.Patents;
-            Prints(patents);
-            if(patents.Any())
+            //Console.WriteLine($"Patent Count:{patents.Count()}");
+            //Console.WriteLine($@"Patent Count in 1800s:{  patents.Count(d => d.YearOfPublication.StartsWith("18"))}");
+            IEnumerable<string> selection = from word in GetWords()
+                                            where !word.Contains("*")
+                                            select word;
+            foreach (string keyword in selection)
             {
-                Console.WriteLine("dd");
+                Console.WriteLine(keyword + " ");
             }
         }
 
@@ -25,6 +29,13 @@ namespace ConsoleApp1
             {
                 Console.WriteLine(item);
             }
+        }
+
+        private static string[] GetWords()
+        {
+            string[] KeyWords = {"abstract","add","alias","as","ascending","async","await","base"
+            ,"bool","break","by","byte","case","catch","char","checked","class"};
+            return KeyWords;
         }
     }
 
