@@ -110,7 +110,15 @@ namespace ConsoleApp1
 
             //ThreadHybrid.Print();
 
-            ThreadSemaphoreSlim.Print();
+            //ThreadSemaphoreSlim.Print();
+
+
+
+            //ThreadReaderWriterLockSlim.Print();
+
+            //ThradPools.Print();
+
+            ThreadCancellationToken.Print();
         }
     }
 }

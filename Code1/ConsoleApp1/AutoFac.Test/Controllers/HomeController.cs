@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using AutoFac.Test.Models;
 using Autofac;
 using AutoFac.Test.AutoFacModel;
+using AutoFac.Test.Job;
 
 namespace AutoFac.Test.Controllers
 {
@@ -24,6 +25,8 @@ namespace AutoFac.Test.Controllers
         }
         public IActionResult Index()
         {
+            TestTask job = new TestTask();
+            job.StartTestAsync();
             return View();
         }
 
