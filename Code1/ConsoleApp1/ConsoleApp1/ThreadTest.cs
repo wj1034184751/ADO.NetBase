@@ -765,4 +765,512 @@ namespace ConsoleApp1
             Thread.Sleep(TimeSpan.FromSeconds(2));
         }
     }
+
+    public class ThreadCancellationToken1
+    {
+        static int TaskMethod(string name, int seconds, CancellationToken token)
+        {
+            Console.WriteLine($"TaskMethod : Task {name} is running on a thread id {Thread.CurrentThread.ManagedThreadId} is thread pool thread:{Thread.CurrentThread.IsThreadPoolThread}");
+            for (int i = 0; i < seconds; i++)
+            {
+                Thread.Sleep(TimeSpan.FromSeconds(1));
+                if (token.IsCancellationRequested)
+                    return -1;
+            }
+
+            return 42 * seconds;
+        }
+
+        public static void Print()
+        {
+            var cts = new CancellationTokenSource();
+            var longTask = new Task<int>(() => TaskMethod("Task1", 10, cts.Token), cts.Token);
+            Console.WriteLine(longTask.Status);
+            cts.Cancel();
+            Console.WriteLine(longTask.Status);
+            Console.WriteLine("First task has been cancelled before execution");
+            cts = new CancellationTokenSource();
+            longTask = new Task<int>(() => TaskMethod("Task2", 10, cts.Token), cts.Token);
+            longTask.Start();
+
+            for (int i = 0; i < 5; i++)
+            {
+                Thread.Sleep(TimeSpan.FromSeconds(0.5));
+                Console.WriteLine(longTask.Status);
+            }
+
+            Console.WriteLine(longTask.Result);
+        }
+    }
+
+    public class ThreadTask
+    {
+        public static void Print()
+        {
+            var t1 = new Task(() => TaskMethod("Task1"));
+            var t2 = new Task(() => TaskMethod("Task2"));
+
+            t2.Start();
+            t1.Start();
+
+            Task.Run(() => TaskMethod("Task 3"));
+            Task.Factory.StartNew(() => TaskMethod("Task 4"));
+            Task.Factory.StartNew(() => TaskMethod("Task 5"), TaskCreationOptions.LongRunning);
+            Thread.Sleep(TimeSpan.FromSeconds(1));
+        }
+
+        static void TaskMethod(string name)
+        {
+            Console.WriteLine("Task {0} is running on a thread id {1}. is thread pool thread {2}", name, Thread.CurrentThread.ManagedThreadId, Thread.CurrentThread.IsThreadPoolThread);
+        }
+    }
+
+    public class ThreadTask2
+    {
+        public static void Print()
+        {
+            CreateTask("Main Thread Task");
+
+            Task<int> task = CreateTask("Task1");
+            task.Start();
+            int result = task.Result;
+            Console.WriteLine("Main: Task1 result:{0}", result);
+
+            task = CreateTask("Task2");
+            task.RunSynchronously();
+            result = task.Result;
+            Console.WriteLine($"Main: Task2 result:{result}");
+
+            task = CreateTask("Task3");
+            task.Start();
+
+            while (!task.IsCompleted)
+            {
+                Console.WriteLine(task.Status);
+                Thread.Sleep(TimeSpan.FromSeconds(0.5));
+            }
+
+            Console.WriteLine(task.Status);
+            result = task.Result;
+            Console.WriteLine($"Main: Task3 result:{result}");
+        }
+
+        static Task<int> CreateTask(string name)
+        {
+            return new Task<int>(() => TaskMethod(name));
+        }
+
+        static int TaskMethod(string name)
+        {
+            Console.WriteLine("TaskMethod: Task {0} is running on a thread id {1}. is thread pool thread {2}", name, Thread.CurrentThread.ManagedThreadId, Thread.CurrentThread.IsThreadPoolThread);
+            Thread.Sleep(TimeSpan.FromSeconds(2));
+            return 42;
+        }
+    }
+
+    public class ThreadTask3
+    {
+        static readonly string method = "TaskMethod";
+        static readonly string main = "Main";
+
+        static int TaskMethod(string name, int seconds)
+        {
+            Console.WriteLine($"{method} : Task {name} is running on a thread id {Thread.CurrentThread.ManagedThreadId} is thread pool thread:{Thread.CurrentThread.IsThreadPoolThread}");
+            Thread.Sleep(TimeSpan.FromSeconds(2));
+            return 42 * seconds;
+        }
+
+        public static void Print()
+        {
+            var firstTask = new Task<int>(() => TaskMethod("First Task", 3));
+            var secondTask = new Task<int>(() => TaskMethod("Second Task", 2));
+
+            firstTask.ContinueWith(t =>
+            {
+                Console.WriteLine($"{main} : first answer is {t.Result} is running on a thread id {Thread.CurrentThread.ManagedThreadId} is thread pool thread:{Thread.CurrentThread.IsThreadPoolThread}");
+
+            }, TaskContinuationOptions.OnlyOnRanToCompletion);
+
+            firstTask.Start();
+            secondTask.Start();
+            Thread.Sleep(TimeSpan.FromSeconds(3));
+
+            Task continuation = secondTask.ContinueWith(t =>
+              {
+                  Console.WriteLine($"{main} : second answer is {t.Result} running on a thread id {Thread.CurrentThread.ManagedThreadId} is thread pool thread:{Thread.CurrentThread.IsThreadPoolThread}");
+              }, TaskContinuationOptions.OnlyOnRanToCompletion | TaskContinuationOptions.ExecuteSynchronously);
+
+            Thread.Sleep(TimeSpan.FromSeconds(2));
+            Console.WriteLine();
+
+            firstTask = new Task<int>(() =>
+              {
+                  var innerTask = Task.Factory.StartNew(() => TaskMethod("Seoncd task", 5), TaskCreationOptions.AttachedToParent);
+                  innerTask.ContinueWith(t => TaskMethod("Third Task", 2), TaskContinuationOptions.AttachedToParent);
+                  return TaskMethod("First Task", 2);
+              });
+
+            firstTask.Start();
+
+            while (!firstTask.IsCompleted)
+            {
+                Console.WriteLine(firstTask.Status);
+                Thread.Sleep(TimeSpan.FromSeconds(0.5));
+            }
+
+            Console.WriteLine(firstTask.Status);
+            Thread.Sleep(TimeSpan.FromSeconds(10));
+        }
+    }
+
+    public class ThreadTask4
+    {
+        static int TaskMethod(string name, int seconds)
+        {
+            Console.WriteLine("Task {0} is running on a thread id {1}. is thread pool thead :{2}", name, Thread.CurrentThread.ManagedThreadId, Thread.CurrentThread.IsThreadPoolThread);
+            Thread.Sleep(TimeSpan.FromSeconds(2));
+            return 42 * seconds;
+        }
+
+        public static void Print()
+        {
+            var firstTask = new Task<int>(() => TaskMethod("First Task", 3));
+            var secondTask = new Task<int>(() => TaskMethod("Second Task", 2));
+            var  Task3 = new Task<int>(() => TaskMethod("Task3 Task", 1));
+            var  Task4 = new Task<int>(() => TaskMethod("Task4 Task", 4));
+
+            var whenAllTask = Task.WhenAll(firstTask, secondTask, Task3, Task4);
+            whenAllTask.ContinueWith(t =>
+            {
+                Console.WriteLine("The first answer is {0},the second is {1},Task3:{2},Task4:{3}", t.Result[0], t.Result[1], t.Result[2], t.Result[3]);
+            }, TaskContinuationOptions.OnlyOnRanToCompletion);
+            firstTask.Start();
+            secondTask.Start();
+            Task3.Start();
+            Task4.Start();
+            Thread.Sleep(TimeSpan.FromSeconds(4));
+
+            var tasks = new List<Task<int>>();
+            for (int i = 1; i < 4; i++)
+            {
+                int counter = i;
+                var task = new Task<int>(() => TaskMethod($"Task {counter}", counter));
+                tasks.Add(task);
+            }
+
+            while (tasks.Count > 0)
+            {
+                var comple = Task.WhenAny(tasks).Result;
+                tasks.Remove(comple);
+                Console.WriteLine(comple.Result);
+            }
+
+            Thread.Sleep(TimeSpan.FromSeconds(1));
+
+        }
+    }
+
+    public class ThreadAsync
+    {
+        public static void Print()
+        {
+            Task t = AsyncWithTPL();
+            t.Wait();
+
+            t = AsyncWithAwait();
+            t.Wait();
+        }
+
+        static Task AsyncWithTPL()
+        {
+            Task<string> t = GetInfoAsync("Task 1");
+            Task t2 = t.ContinueWith(task =>
+                  Console.WriteLine(t.Result)
+              , TaskContinuationOptions.NotOnFaulted);
+
+            Task t3 = t.ContinueWith(task =>
+                Console.WriteLine(t.Exception.InnerException)
+            , TaskContinuationOptions.NotOnFaulted);
+
+            return Task.WhenAny(t2, t3);
+        }
+
+        async static Task AsyncWithAwait()
+        {
+            try
+            {
+                string result = await GetInfoAsync("Task 2");
+                throw new Exception("Boom!");
+                Console.WriteLine(result);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+        }
+
+        async static Task<string> GetInfoAsync(string name)
+        {
+            await Task.Delay(TimeSpan.FromSeconds(2));
+       
+            return $"Task {name} is running on a thread id {Thread.CurrentThread.ManagedThreadId}. is thread pool thread:{Thread.CurrentThread.IsThreadPoolThread}";
+        }
+    }
+
+    public class ThreadAsync2
+    {
+        public static void Print()
+        {
+            Task t = AsyncProcessing();
+            t.Wait();
+        }
+
+        async static Task AsyncProcessing()
+        {
+            Func<string, Task<string>> asyncLambda = async name =>
+               {
+                   await Task.Delay(TimeSpan.FromSeconds(2));
+                   return $"Task {name} is running on a thread id {Thread.CurrentThread.ManagedThreadId}. is thread pool thread:{Thread.CurrentThread.IsThreadPoolThread}";
+               };
+
+            string result = await asyncLambda("async lambda");
+            Console.WriteLine(result);
+        }
+    }
+
+    public class ThreadAsync3
+    {
+        public static void Print()
+        {
+            Task t = AsyncWithTPL();
+            t.Wait();
+
+            t = AsyncWithAwait();
+            t.Wait();
+        }
+
+        static Task AsyncWithTPL()
+        {
+            var containerTask = new Task(() =>
+              {
+                  Task<string> t = GetInfoAsync("TPL 1");
+                  t.ContinueWith(task =>
+                  {
+                      Console.WriteLine(t.Result);
+                      Task<string> t2 = GetInfoAsync("TPL 2");
+                      t2.ContinueWith(innerTask =>
+                          Console.WriteLine(innerTask.Result),
+                          TaskContinuationOptions.NotOnFaulted | TaskContinuationOptions.AttachedToParent
+                      );
+                      t2.ContinueWith(innerTask =>
+                        Console.WriteLine(innerTask.Exception.InnerException),
+                        TaskContinuationOptions.NotOnFaulted | TaskContinuationOptions.AttachedToParent
+                      );
+                  }, TaskContinuationOptions.NotOnFaulted | TaskContinuationOptions.AttachedToParent);
+
+                  t.ContinueWith(task =>
+                     Console.WriteLine(t.Exception.InnerException),
+                     TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.AttachedToParent
+                  );
+              });
+            containerTask.Start();
+            return containerTask;
+        }
+
+        async static Task AsyncWithAwait()
+        {
+            try
+            {
+                string result = await GetInfoAsync("Async 1");
+                Console.WriteLine(result);
+                result = await GetInfoAsync("Async 2");
+                Console.WriteLine(result);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+        }
+
+        async static Task<string> GetInfoAsync(string name)
+        {
+            Console.WriteLine($"Task {name} started!");
+            await Task.Delay(TimeSpan.FromSeconds(2));
+
+            if (name == "TPL 2")
+                throw new Exception("Boom!");
+            return $"Task {name} is running on a thread id {Thread.CurrentThread.ManagedThreadId}. is thread pool thread:{Thread.CurrentThread.IsThreadPoolThread}";
+        }
+    }
+
+    public class ThreadAsync4
+    {
+        public static void Print()
+        {
+            Task t = AsyncProcessing();
+            t.Wait();
+        }
+
+        async static Task AsyncProcessing()
+        {
+            Task<string> t1 = GetInfoAsync("Task 1 ", 6);
+            Task<string> t2 = GetInfoAsync("Task 2 ", 2);
+
+            var t = await GetInfoAsync("Task 1", 4);
+            var tt = await GetInfoAsync("Task 2", 5);
+            Console.WriteLine(t);
+            Console.WriteLine(tt);
+            Console.WriteLine($"Task  main is running on a thread id {Thread.CurrentThread.ManagedThreadId}. is thread pool thread:{Thread.CurrentThread.IsThreadPoolThread}");
+            //string[] results = await Task.WhenAll(t1, t2);
+            //foreach (string result in results)
+            //{
+            //    Console.WriteLine(result);
+            //}
+        }
+
+        async static Task<string> GetInfoAsync(string name,int seconds)
+        {
+            //await Task.Delay(TimeSpan.FromSeconds(seconds));
+            await Task.Run(() =>
+             Thread.Sleep(TimeSpan.FromSeconds(seconds)));
+            return $"Task {name} is running on a thread id {Thread.CurrentThread.ManagedThreadId}. is thread pool thread:{Thread.CurrentThread.IsThreadPoolThread}";
+        }
+    }
+
+    public class ThreadAsync5
+    {
+        public static void Print()
+        {
+            Task t = AsyncProcessing();
+            t.Wait();
+        }
+        async static Task AsyncProcessing()
+        {
+            Console.WriteLine("1 Single exception");
+            try
+            {
+                string result = await GetInfoAsync("Task 1", 2);
+                Console.WriteLine(result);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception details:{ex}");
+            }
+
+            Console.WriteLine();
+            Console.WriteLine("2. Multiple exceptions");
+
+            Task<string> t1 = GetInfoAsync("Task 1", 3);
+            Task<string> t2 = GetInfoAsync("Task 2", 2);
+            try
+            {
+                string[] results = await Task.WhenAll(t1, t2);
+                Console.WriteLine(results.Length);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception details:{ex}");
+            }
+
+            Console.WriteLine();
+            Console.WriteLine("3. Multiple exceptions with AggreageException");
+            t1 = GetInfoAsync("Task 1", 3);
+            t2 = GetInfoAsync("Task 2", 2);
+            Task<string[]> t3 = Task.WhenAll(t1, t2);
+            try
+            {
+                string[] results = await t3;
+                Console.WriteLine(results.Length);
+            }
+            catch
+            {
+                var ae = t3.Exception.Flatten();
+                var exceptions = ae.InnerExceptions;
+                Console.WriteLine($"Exceptions caught:{exceptions.Count}");
+                foreach(var e in exceptions)
+                {
+                    Console.WriteLine($"Exception details: {e}");
+                    Console.WriteLine();
+                }
+            }
+        }
+
+        async static Task<string> GetInfoAsync(string name,int seconds)
+        {
+            await Task.Delay(TimeSpan.FromSeconds(seconds));
+            throw new Exception($"Boom from {name}!");
+        }
+    }
+
+    public class ThreadAsync6
+    {
+        public static void Print()
+        {
+            Task t = AsyncTask();
+            t.Wait();
+
+            AsyncVoid();
+            Thread.Sleep(TimeSpan.FromSeconds(3));
+
+            t = AsyncTaskErrors();
+            while(!t.IsFaulted)
+            {
+                Thread.Sleep(TimeSpan.FromSeconds(1));
+            }
+
+            Console.WriteLine(t.Exception);
+
+            try
+            {
+                AsyncVoidWithErrors();
+                Thread.Sleep(TimeSpan.FromSeconds(3));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+
+            int[] numbers = new[] { 1, 2, 3, 4, 5 };
+            Array.ForEach(numbers, async number =>
+             {
+                 await Task.Delay(TimeSpan.FromSeconds(1));
+                 if (number == 3) throw new Exception("Boom1");
+                 Console.WriteLine(number);
+             });
+
+            Console.ReadLine();
+        }
+
+        async static Task AsyncTaskErrors()
+        {
+            string result = await GetInfoAsync("AsyncTaskException", 2);
+            Console.WriteLine(result);
+        }
+
+        async static void AsyncVoidWithErrors()
+        {
+            string result = await GetInfoAsync("AsyncVoidException", 2);
+            Console.WriteLine(result);
+        }
+
+        async static Task AsyncTask()
+        {
+            string result = await GetInfoAsync("AsyncTask", 2);
+            Console.WriteLine(result);
+        }
+
+        async static Task AsyncVoid()
+        {
+            string result = await GetInfoAsync("AsyncTask", 2);
+            Console.WriteLine(result);
+        }
+
+        async static Task<string> GetInfoAsync(string name, int seconds)
+        {
+            await Task.Delay(TimeSpan.FromSeconds(seconds));
+            if (name.Contains("Exception"))
+                throw new Exception($"Boom from {name}");
+            return $"Task {name} is running on a thread id {Thread.CurrentThread.ManagedThreadId}. is thread pool thread:{Thread.CurrentThread.IsThreadPoolThread}";
+        }
+    }
 }

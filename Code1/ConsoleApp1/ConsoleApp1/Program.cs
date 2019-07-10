@@ -112,13 +112,29 @@ namespace ConsoleApp1
 
             //ThreadSemaphoreSlim.Print();
 
-
-
             //ThreadReaderWriterLockSlim.Print();
 
             //ThradPools.Print();
 
-            ThreadCancellationToken.Print();
+            //ThreadCancellationToken.Print();
+
+            //ThreadTask.Print();
+            //ThreadTask2.Print();
+            //ThreadTask3.Print();
+
+            //ThreadCancellationToken1.Print();
+
+            //ThreadTask4.Print();
+
+            //ThreadAsync2.Print();
+
+            //ThreadAsync3.Print();
+
+            //ThreadAsync4.Print();
+
+            //ThreadAsync5.Print();
+
+            ThreadAsync6.Print();
         }
     }
 }

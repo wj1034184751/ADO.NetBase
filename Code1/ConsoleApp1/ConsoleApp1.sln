@@ -12,7 +12,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Thirdparty", "Thirdparty", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsFormsApp1", "WindowsFormsApp1\WindowsFormsApp1.csproj", "{0EBDE693-31D3-49B7-832C-9E00BB11AB95}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoFac.Test", "AutoFac.Test\AutoFac.Test.csproj", "{77335C95-4CCC-4D5A-B953-723D93AC795B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoFac.Test", "AutoFac.Test\AutoFac.Test.csproj", "{77335C95-4CCC-4D5A-B953-723D93AC795B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MeidatR.Test", "MeidatR.Test\MeidatR.Test.csproj", "{B764DFC2-BF3F-43FE-A659-55C661504E6E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "32NetSet", "32NetSet\32NetSet.csproj", "{833B6C03-437C-43D2-84D1-1D3F3B4E134D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,6 +36,14 @@ Global
 		{77335C95-4CCC-4D5A-B953-723D93AC795B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{77335C95-4CCC-4D5A-B953-723D93AC795B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{77335C95-4CCC-4D5A-B953-723D93AC795B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B764DFC2-BF3F-43FE-A659-55C661504E6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B764DFC2-BF3F-43FE-A659-55C661504E6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B764DFC2-BF3F-43FE-A659-55C661504E6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B764DFC2-BF3F-43FE-A659-55C661504E6E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{833B6C03-437C-43D2-84D1-1D3F3B4E134D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{833B6C03-437C-43D2-84D1-1D3F3B4E134D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{833B6C03-437C-43D2-84D1-1D3F3B4E134D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{833B6C03-437C-43D2-84D1-1D3F3B4E134D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
