@@ -12,7 +12,11 @@ namespace _32NetSet
         static void Main(string[] args)
         {
             //var singClass = NetSet_Singleton.Instance;
-            NetSet_AbstractFactory.Print();
+            //NetSet_AbstractFactory.Print();
+
+            //NetSetAllOne.Print();
+
+            NetSet_ReflectTest.Print();
         }
     }
 }
