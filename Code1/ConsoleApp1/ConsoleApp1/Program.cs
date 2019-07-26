@@ -138,7 +138,11 @@ namespace ConsoleApp1
 
             //ThreadDic.Print();
 
-            ThreadDic2.Print();
+            //ThreadDic2.Print();
+
+            //HashTable.Printf();
+
+            TaskTest.Printf();
         }
     }
 }

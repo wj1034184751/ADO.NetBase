@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -28,6 +29,16 @@ namespace ConsoleApp1
             }
 
             return frequencies;
+        }
+
+        public static void Printf()
+        {
+            ArrayList a = new ArrayList();
+            IEnumerator e = a.GetEnumerator();
+            Console.WriteLine(e.GetType().Name);
+            string s = string.Empty;
+            IEnumerator se = s.GetEnumerator();
+            Console.WriteLine(se.GetType().Name);
         }
     }
 }

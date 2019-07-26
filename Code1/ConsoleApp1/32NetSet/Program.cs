@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 
 namespace _32NetSet
 {
@@ -16,7 +17,21 @@ namespace _32NetSet
 
             //NetSetAllOne.Print();
 
-            NetSet_ReflectTest.Print();
+            //NetSet_ReflectTest.Print();
+
+            //NetSet_Builder.Printf();
+
+            //NodeListTest.Printf();
+
+            //NetSet_Class.Printf();
+
+            //NetSet_FactoryMehod.Printf();
+
+            //NetSet_Prototype.Printf();
+
+            //NetSet_Bridge.Printf();
+
+            NetSet_Decorator.Printf();
         }
     }
 }

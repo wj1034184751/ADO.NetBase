@@ -57,6 +57,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StaticTo.cs" />
+    <Compile Include="TaskTest.cs" />
     <Compile Include="ThreadTest.cs" />
     <Compile Include="UitHelper.cs" />
   </ItemGroup>
