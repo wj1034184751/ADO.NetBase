@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 
 namespace _32NetSet
 {
@@ -12,7 +13,25 @@ namespace _32NetSet
         static void Main(string[] args)
         {
             //var singClass = NetSet_Singleton.Instance;
-            NetSet_AbstractFactory.Print();
+            //NetSet_AbstractFactory.Print();
+
+            //NetSetAllOne.Print();
+
+            //NetSet_ReflectTest.Print();
+
+            //NetSet_Builder.Printf();
+
+            //NodeListTest.Printf();
+
+            //NetSet_Class.Printf();
+
+            //NetSet_FactoryMehod.Printf();
+
+            //NetSet_Prototype.Printf();
+
+            //NetSet_Bridge.Printf();
+
+            NetSet_Decorator.Printf();
         }
     }
 }

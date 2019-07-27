@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -1271,6 +1273,137 @@ namespace ConsoleApp1
             if (name.Contains("Exception"))
                 throw new Exception($"Boom from {name}");
             return $"Task {name} is running on a thread id {Thread.CurrentThread.ManagedThreadId}. is thread pool thread:{Thread.CurrentThread.IsThreadPoolThread}";
+        }
+    }
+
+    public class ThreadDic
+    {
+        const string Item = "Dictionary item";
+        public static string CurrentItem;
+
+        public static void Print()
+        {
+            var conCurrentDic = new ConcurrentDictionary<int, string>();
+            var dic = new Dictionary<int, string>();
+            var sw = new Stopwatch();
+            sw.Start();
+
+            for (int i = 0; i < 10000000; i++)
+            {
+                var item = i;
+                lock (dic)
+                {
+                    dic[i] = Item;
+                }
+            }
+            sw.Stop();
+            Console.WriteLine($"Writing to dictionary with a lock {sw.Elapsed}");
+
+            sw.Restart();
+
+            for(int i=0;i< 10000000; i++)
+            {
+                conCurrentDic[i] = Item;
+            }
+            sw.Stop();
+            Console.WriteLine($"Writing to conCurrentDic  {sw.Elapsed}");
+
+            sw.Restart();
+
+            for (int i = 0; i < 10000000; i++)
+            {
+                lock(dic)
+                {
+                    CurrentItem = dic[i];
+                }
+            }
+            sw.Stop();
+            Console.WriteLine($"Reading from dic with a lock  {sw.Elapsed}");
+
+            sw.Restart();
+
+            for (int i = 0; i < 10000000; i++)
+            {
+                CurrentItem = conCurrentDic[i];
+            }
+            sw.Stop();
+            Console.WriteLine($"Reading from conCurrentDic    {sw.Elapsed}");
+        }
+    }
+
+    public class ThreadDic2
+    {
+        class CustomerTask
+        {
+            public int Id { get; set; }
+        }
+
+        public static void Print()
+        {
+            var name = "Main";
+            Task t = RunProgram();
+            UitHelper.PrintF(PrintEnum.main, "Print");
+            t.Wait();
+            UitHelper.PrintF(PrintEnum.main, "Print");
+        }
+
+        static async Task RunProgram()
+        {
+            UitHelper.PrintF(PrintEnum.program, "RunProgram");
+            var taskQueue = new ConcurrentQueue<CustomerTask>();
+            var cts = new CancellationTokenSource();
+            var taskSource = Task.Run(() => TaskProducer(taskQueue));
+            UitHelper.PrintF(PrintEnum.program, "RunProgram");
+            Task[] processors = new Task[4];
+            for (int i = 1; i <= 4; i++)
+            {
+                string processid = i.ToString();
+                processors[i - 1] = Task.Run(() =>
+                      TaskProcessor(taskQueue, "processor " + processid, cts.Token));
+            }
+
+            UitHelper.PrintF(PrintEnum.program, "RunProgram");
+            await taskSource;
+            UitHelper.PrintF(PrintEnum.program, "RunProgram");
+            cts.CancelAfter(TimeSpan.FromSeconds(2));
+            await Task.WhenAll(processors);
+            UitHelper.PrintF(PrintEnum.program, "RunProgram");
+        }
+
+        static async Task TaskProducer(ConcurrentQueue<CustomerTask> queue)
+        {
+            for (int i = 1; i <= 20; i++)
+            {
+                await Task.Delay(50);
+                var workItem = new CustomerTask { Id = i };
+                queue.Equals(workItem);
+                Console.WriteLine($"Task {workItem.Id} has been posted");
+            }
+        }
+
+        static async Task TaskProcessor(ConcurrentQueue<CustomerTask> queue,string name,CancellationToken token)
+        {
+            CustomerTask workItem;
+            bool dequeueSuccessful = false;
+
+            await GetRandomDeplay();
+            do
+            {
+                dequeueSuccessful = queue.TryDequeue(out workItem);
+                if (dequeueSuccessful)
+                {
+                    Console.WriteLine($"Task {workItem.Id} has been processed by {name}");
+                }
+
+                await GetRandomDeplay();
+            }
+            while (!token.IsCancellationRequested);
+        }
+        
+        static Task GetRandomDeplay()
+        {
+            int delay = new Random(DateTime.Now.Millisecond).Next(1, 500);
+            return Task.Delay(delay);
         }
     }
 }

@@ -134,7 +134,15 @@ namespace ConsoleApp1
 
             //ThreadAsync5.Print();
 
-            ThreadAsync6.Print();
+            //ThreadAsync6.Print();
+
+            //ThreadDic.Print();
+
+            //ThreadDic2.Print();
+
+            //HashTable.Printf();
+
+            TaskTest.Printf();
         }
     }
 }

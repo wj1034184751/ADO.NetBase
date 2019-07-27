@@ -28,4 +28,52 @@ namespace _32NetSet
             Console.WriteLine($"This Guid:{Guid.NewGuid().ToString()}");
         }
     }
+
+    public class NetSet_Class
+    {
+        public NetSet_Class()
+        {
+            Console.WriteLine("NEW Instance Created");
+        }
+
+        static NetSet_Class()
+        {
+            Console.WriteLine("This is Static Constructor");
+        }
+
+        public static void Hello()
+        {
+            Console.WriteLine("Hello");
+        }
+
+        public static void Printf()
+        {
+            NetSet_Class.Hello();
+            NetSet_Class ms = new NetSet_Class();
+
+        }
+    }
+
+    public class MyNewClass
+    {
+        protected MyNewClass() { }
+    }
+
+    public class MyFactory
+    {
+        public MyFactory() { }
+
+        public MyNewClass CreateNewClass()
+        {
+            return new mySubClass();
+        }
+
+        private class mySubClass : MyNewClass
+        {
+            public mySubClass() : base()
+            {
+
+            }
+        }
+    }
 }
