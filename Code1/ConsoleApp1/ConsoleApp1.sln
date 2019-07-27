@@ -16,7 +16,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoFac.Test", "AutoFac.Tes
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MeidatR.Test", "MeidatR.Test\MeidatR.Test.csproj", "{B764DFC2-BF3F-43FE-A659-55C661504E6E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "32NetSet", "32NetSet\32NetSet.csproj", "{833B6C03-437C-43D2-84D1-1D3F3B4E134D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "32NetSet", "32NetSet\32NetSet.csproj", "{833B6C03-437C-43D2-84D1-1D3F3B4E134D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetMath", "NetMath\NetMath.csproj", "{55A89B24-8609-46AE-9AB2-23EE4CA619DF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,6 +46,10 @@ Global
 		{833B6C03-437C-43D2-84D1-1D3F3B4E134D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{833B6C03-437C-43D2-84D1-1D3F3B4E134D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{833B6C03-437C-43D2-84D1-1D3F3B4E134D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55A89B24-8609-46AE-9AB2-23EE4CA619DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55A89B24-8609-46AE-9AB2-23EE4CA619DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55A89B24-8609-46AE-9AB2-23EE4CA619DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55A89B24-8609-46AE-9AB2-23EE4CA619DF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
