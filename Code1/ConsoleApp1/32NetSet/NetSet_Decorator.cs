@@ -58,9 +58,16 @@ namespace _32NetSet
         }
 
         public override void Shot()
+        {
+            Console.WriteLine("T70坦克平均每时运行35仅是!");
+            Console.WriteLine("imya")
+        }
       
 
         public override void Run()
+        {
+            Console.WriteLine("T70坦克平均每时运行35仅是!");
+        }
        
     }
 

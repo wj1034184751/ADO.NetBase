@@ -31,7 +31,12 @@ namespace _32NetSet
 
             //NetSet_Bridge.Printf();
 
-            NetSet_Decorator.Printf();
+            //NetSet_Decorator.Printf();
+            //var result = Math.Log(1000000, 10);
+            //Console.WriteLine(result);
+            //Console.ReadLine();
+
+            NetSet_Observer.Printf();
         }
     }
 }
