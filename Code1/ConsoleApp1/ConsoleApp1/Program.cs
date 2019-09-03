@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LinqToSql_Expression;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -142,7 +143,9 @@ namespace ConsoleApp1
 
             //HashTable.Printf();
 
-            TaskTest.Printf();
+            //TaskTest.Printf();
+
+            LinqToSql1.Printf();
         }
     }
 }

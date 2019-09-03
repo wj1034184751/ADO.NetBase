@@ -38,7 +38,9 @@ namespace _32NetSet
             //Console.ReadLine();
 
 
-            NetSet_Observer.Printf();
+            //NetSet_Observer.Printf();
+
+            
         }
     }
 }
