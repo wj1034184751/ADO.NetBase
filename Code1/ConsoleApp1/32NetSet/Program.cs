@@ -5,6 +5,7 @@ namespace _32NetSet
 {
     class t1
     {
+        //公司
         public int a { get; set; }
     }
     
@@ -35,6 +36,7 @@ namespace _32NetSet
             //var result = Math.Log(1000000, 10);
             //Console.WriteLine(result);
             //Console.ReadLine();
+
 
             NetSet_Observer.Printf();
         }
