@@ -56,8 +56,20 @@ namespace LinqToSql_Expression
         
         public static void Printf()
         {
-            LinqToSql1 linq1 = new LinqToSql1();
-            Console.WriteLine(linq1.LinqToSqlFuncTest());
+            //LinqToSql1 linq1 = new LinqToSql1();
+            //Console.WriteLine(linq1.LinqToSqlFuncTest());
+
+            //var func = ExpressionTypeHelper.GenerateExpression(new Users());
+            //List<Users> list = new List<Users>();
+            //list.Add(new Users() { Name = "wj", Phone = "18968047524", Sex = 1, Age = 20 });
+            //list.Add(new Users() { Name = "wc", Phone = "18968047524", Sex = 1, Age = 21 });
+            //list.Add(new Users() { Name = "wy", Phone = "18968047345", Sex = 1, Age = 22 });
+            //list.Add(new Users() { Name = "wG", Phone = "189680474354", Sex = 0, Age = 23 });
+            //list.Add(new Users() { Name = "wgg", Phone = "1896832324", Sex = 0, Age = 24 });
+
+            //var ii = list.Where(func).ToList();
+
+            ExpressionTypeHelper.MyParameterExpression();
         }
     }
 }
