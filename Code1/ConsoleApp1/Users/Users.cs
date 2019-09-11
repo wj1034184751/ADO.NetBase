@@ -16,4 +16,14 @@ namespace Entitys
 
         public int? Age { get; set; }
     }
+    public class Admin
+    {
+        public string Name { get; set; }
+
+        public string Phone { get; set; }
+
+        public int? Sex { get; set; }
+
+        public int? Age { get; set; }
+    }
 }
