@@ -165,5 +165,36 @@ namespace LinqToSql_Expression
 
             Console.WriteLine(f(1, 1, 1, 1) + "");
         }
+
+        public static void  ForExpression()
+        {
+            Expression<Func<Users, object>> func = d => d.Age;
+            var me = GetProperty(func);
+        }
+
+        public static MemberInfo GetProperty(LambdaExpression lambda)
+        {
+            Expression expr = lambda;
+            var nodeType = expr.NodeType;
+            var LambdaExpression = ((LambdaExpression)expr).Body;
+            for (; ; )
+            {
+                switch (expr.NodeType)
+                {
+                    case ExpressionType.Lambda:
+                        expr = ((LambdaExpression)expr).Body;
+                        break;
+                    case ExpressionType.Convert:
+                        expr = ((UnaryExpression)expr).Operand;
+                        break;
+                    case ExpressionType.MemberAccess:
+                        MemberExpression memberExpression = (MemberExpression)expr;
+                        MemberInfo mi = memberExpression.Member;
+                        return mi;
+                    default:
+                        return null;
+                }
+            }
+        }
     }
 }

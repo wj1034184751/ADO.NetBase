@@ -74,8 +74,8 @@ namespace LinqToSql_Expression
             //ExpressionTest.ExpressionTest_Equals();
             //ExpressionTest.ExpressionTest_EqualsAnd();
             //ExpressionTest.ExpressionVisitorTest();
-            ExpressionTest.ExpressionSelectSetValue();
-            
+            //ExpressionTest.ExpressionSelectSetValue();
+             ExpressionTypeHelper.ForExpression();
         }
     }
 }
