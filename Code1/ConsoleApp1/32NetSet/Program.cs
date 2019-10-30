@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Numerics;
 
 namespace _32NetSet
 {
@@ -40,7 +41,10 @@ namespace _32NetSet
 
             //NetSet_Observer.Printf();
 
-            
+            var result = Cocoon.getButterfly(1);
+            MathHelper.Complex c1 = new MathHelper.Complex(2, 3);
+            MathHelper.Complex c2 = new MathHelper.Complex(6, 8);
+            result.Execute(c1, c2);
         }
     }
 }

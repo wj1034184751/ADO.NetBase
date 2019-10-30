@@ -145,7 +145,9 @@ namespace ConsoleApp1
 
             //TaskTest.Printf();
 
-            LinqToSql1.Printf();
+            //LinqToSql1.Printf();
+
+
         }
     }
 }
