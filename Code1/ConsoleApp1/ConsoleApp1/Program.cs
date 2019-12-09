@@ -147,7 +147,6 @@ namespace ConsoleApp1
 
             //LinqToSql1.Printf();
 
-
         }
     }
 }
