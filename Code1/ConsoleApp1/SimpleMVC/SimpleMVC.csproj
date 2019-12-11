@@ -77,13 +77,19 @@
     </Compile>
     <Compile Include="Handler\MvcHandler.cs" />
     <Compile Include="Module\UrlRoutingModule.cs" />
+    <Compile Include="MVC\ActionExecutor.cs" />
+    <Compile Include="MVC\ActionResult.cs" />
+    <Compile Include="MVC\ControllerActionInvoker.cs" />
     <Compile Include="MVC\ControllerBase.cs" />
     <Compile Include="MVC\ControllerBuilder.cs" />
     <Compile Include="MVC\ControllerContext.cs" />
     <Compile Include="MVC\DefaultControllerFactory.cs" />
+    <Compile Include="MVC\DefaultModelBinder.cs" />
     <Compile Include="MVC\IActionInvoker.cs" />
     <Compile Include="MVC\IController.cs" />
     <Compile Include="MVC\IControllerFactory.cs" />
+    <Compile Include="MVC\IModelBinder.cs" />
+    <Compile Include="MVC\RawContextResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Routing\IRouteHandler.cs" />
     <Compile Include="Routing\MvcRouteHandler.cs" />

@@ -25,6 +25,8 @@ namespace SimpleMVC.Handler
         {
             string controllerName = this.RequestContext.RouteData.Controller;
             IControllerFactory controllerFactory = ControllerBuilder.Current.GetControllerFactory();
+            IController controller = controllerFactory.CreateController(this.RequestContext, controllerName);
+            controller.Execute(this.RequestContext);
         }
     }
 }

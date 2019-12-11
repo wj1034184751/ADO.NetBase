@@ -1,5 +1,7 @@
-﻿using System;
+﻿using SimpleMVC.MVC;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 
@@ -9,9 +11,12 @@ namespace SimpleMVC.Controllers
     {
         public ActionResult Index(SimpleModel model)
         {
-            Action<TestWriter> callback=d=>
-            {
-            }
+            Action<TextWriter> callback = writer =>
+              {
+                  writer.Write(string.Format("Controller:{0}<br/>Action:{1}<br/><br/>", model.Controller, model.Action));
+                  writer.Write(string.Format("Foo:{0}<br/>Bar:{1}<br/>Baz:{2}", model.Foo, model.Bar, model.Baz));
+              };
+            return new RawContextResult(callback);
         }
     }
 }
